@@ -1,0 +1,41 @@
+:root {
+  --dark: #3b4246;
+  --accent: #3aa17a;
+  --muted: #6b7280;
+}
+* { box-sizing: border-box; font-family: Inter, system-ui, Arial, sans-serif; }
+body { margin:0; color:#222; background: #fff; }
+.site-header {
+  background: var(--dark);
+  color: #fff;
+  display:flex;
+  align-items:center;
+  padding:18px 32px;
+  gap:18px;
+}
+.hero-img { width:180px; height:120px; object-fit:cover; border-radius:3px; }
+.title-wrap { flex:1; }
+.title-wrap h1 { font-size:64px; margin:0; font-weight:300;}
+.top-nav { text-align:right; min-width:140px; }
+.container { padding:24px 32px; }
+h2 { font-size:48px; margin:8px 0 20px; }
+.controls { display:flex; gap:10px; align-items:center; margin-bottom:18px; }
+.controls input[type="text"], #search { padding:8px 10px; width:360px; border:1px solid #ddd; border-radius:6px;}
+button { border:0; padding:8px 12px; border-radius:6px; cursor:pointer; }
+button.green { background:var(--accent); color:white; font-weight:600; }
+button:active { transform:translateY(1px); }
+.students-table { width:100%; border-collapse:collapse; margin-top:12px; }
+.students-table th, .students-table td { padding:18px 12px; border-bottom:1px solid #eee; text-align:left; }
+.students-table th { font-weight:700; color:#333; background:#fff; }
+.action-btn { padding:6px 10px; border-radius:6px; }
+.action-btn.edit { background:#66b2b8; color:white; }
+.action-btn.delete { background:#d9534f; color:white; margin-left:6px; }
+
+/* Modal */
+.modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.35); }
+.hidden { display:none; }
+.modal-content { background:white; padding:18px; width:480px; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+.modal-content label { display:block; margin-bottom:8px; font-size:14px; }
+.modal-content input { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #ddd; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+.errors { color:#b22222; margin-top:8px; font-size:13px;}

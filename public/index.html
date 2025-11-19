@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XYZ University - Students</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="title-wrap">
+      <h1>XYZ University</h1>
+    </div>
+    <nav class="top-nav">
+      <div>Home</div>
+      <div>Students list</div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2>All students</h2>
+
+    <div class="controls">
+      <input id="search" placeholder="Buscar por nombre, ciudad o email..." />
+      <button id="btn-add" class="green">Add a new student</button>
+      <button id="btn-export">Export JSON</button>
+      <input id="import-file" type="file" accept="application/json" style="display:none">
+      <button id="btn-import">Import JSON</button>
+    </div>
+
+    <table class="students-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Address</th><th>City</th><th>State</th><th>Email</th><th>Phone</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="students-body">
+        <!-- rows via JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Modal simple -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="modal-title">Add student</h3>
+      <form id="student-form">
+        <input type="hidden" id="student-id" />
+        <label>Nombre <input id="name" /></label>
+        <label>Address <input id="address" /></label>
+        <label>City <input id="city" /></label>
+        <label>State <input id="state" /></label>
+        <label>Email <input id="email" /></label>
+        <label>Phone <input id="phone" /></label>
+        <div class="modal-actions">
+          <button type="submit" class="green">Save</button>
+          <button type="button" id="cancel">Cancel</button>
+        </div>
+      </form>
+      <div id="form-errors" class="errors"></div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
