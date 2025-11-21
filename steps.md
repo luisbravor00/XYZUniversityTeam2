@@ -20,8 +20,8 @@ cat > .env << 'EOF'
 # RDS MariaDB Configuration
 RDS_HOSTNAME=your-rds-endpoint.rds.amazonaws.com
 RDS_PORT=3306
-RDS_USERNAME=admin
-RDS_PASSWORD=Mypassw0rd123
+RDS_USERNAME=
+RDS_PASSWORD=
 RDS_DB_NAME=students_db
 
 # Application Port
