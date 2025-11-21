@@ -1,29 +1,24 @@
 #!/bin/bash
-set -e
 
 # Update system
-apt update -y
-apt upgrade -y
+sudo apt update -y
+sudo apt upgrade -y
 
 # Install required packages
-apt install -y git nginx build-essential
-
-# Install Node.js LTS
-curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
-apt install -y nodejs
+sudo apt install -y git nginx build-essential nodejs
 
 # Switch to ubuntu user home
 cd /home/ubuntu
 
 # Clone repository
-sudo -u ubuntu git clone https://github.com/luisbravor00/XYZUniversityTeam2.git
+sudo git clone https://github.com/luisbravor00/XYZUniversityTeam2.git
 cd XYZUniversityTeam2
 
 # Install dependencies as ubuntu user
-sudo -u ubuntu npm install
+sudo npm install
 
 # Write .env
-sudo -u ubuntu tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
+sudo tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
 RDS_HOSTNAME=your-rds-endpoint.rds.amazonaws.com
 RDS_PORT=3306
 RDS_USERNAME=
@@ -36,9 +31,9 @@ EOF
 chmod 600 /home/ubuntu/XYZUniversityTeam2/.env
 
 # Configure Nginx reverse proxy
-rm -f /etc/nginx/sites-enabled/default
+sudo rm -f /etc/nginx/sites-enabled/default
 
-tee /etc/nginx/sites-available/myapp > /dev/null << 'EOF'
+sudo tee /etc/nginx/sites-available/myapp > /dev/null << 'EOF'
 server {
     listen 80;
     server_name _;
@@ -57,16 +52,16 @@ server {
 }
 EOF
 
-ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
-nginx -t
-systemctl restart nginx
+sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
+sudo nginx -t
+sudio systemctl restart nginx
 
 # Install PM2 globally
 npm install -g pm2
 
 # Start the Node app as ubuntu user
-sudo -u ubuntu pm2 start /home/ubuntu/XYZUniversityTeam2/server.js --name xyzuniversity
+sudo pm2 start /home/ubuntu/XYZUniversityTeam2/server.js --name xyzuniversity
 
 # Enable PM2 startup
-sudo -u ubuntu pm2 startup systemd -u ubuntu --hp /home/ubuntu
-sudo -u ubuntu pm2 save
+sudo pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo pm2 save
