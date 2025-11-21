@@ -1,46 +1,48 @@
 #!/bin/bash
-# EC2 Instance Setup Script for XYZ University (RDS MariaDB Version)
+set -e
 
-# Update and Upgrade the System
-sudo apt update
-sudo apt upgrade -y
+# Update system
+apt update -y
+apt upgrade -y
 
-# Install NodeJS and Nginx
-sudo apt install -y nodejs build-essential nginx
+# Install required packages
+apt install -y git nginx build-essential
 
-# Setup the app
+# Install Node.js LTS
+curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+apt install -y nodejs
+
+# Switch to ubuntu user home
 cd /home/ubuntu
-git clone https://github.com/luisbravor00/XYZUniversityTeam2.git
-cd /home/ubuntu/XYZUniversityTeam2
-npm install
 
-# Create .env file with RDS credentials
-# IMPORTANT: Replace these values with your actual RDS information
-cat > .env << 'EOF'
-# RDS MariaDB Configuration
+# Clone repository
+sudo -u ubuntu git clone https://github.com/luisbravor00/XYZUniversityTeam2.git
+cd XYZUniversityTeam2
+
+# Install dependencies as ubuntu user
+sudo -u ubuntu npm install
+
+# Write .env
+sudo -u ubuntu tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
 RDS_HOSTNAME=your-rds-endpoint.rds.amazonaws.com
 RDS_PORT=3306
 RDS_USERNAME=
 RDS_PASSWORD=
 RDS_DB_NAME=students_db
-
-# Application Port
 PORT=3000
-
-# Node Environment
 NODE_ENV=production
 EOF
 
-# Secure the .env file (important for credentials)
-chmod 600 .env
+chmod 600 /home/ubuntu/XYZUniversityTeam2/.env
 
 # Configure Nginx reverse proxy
-sudo rm /etc/nginx/sites-enabled/default
-sudo tee /etc/nginx/sites-available/myapp > /dev/null << 'EOF'
+rm -f /etc/nginx/sites-enabled/default
+
+tee /etc/nginx/sites-available/myapp > /dev/null << 'EOF'
 server {
     listen 80;
     server_name _;
-    
+
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -51,32 +53,20 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
-        
-        # Timeouts (adjust if needed for large imports)
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
     }
 }
 EOF
 
-sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
+ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
+nginx -t
+systemctl restart nginx
 
-# Start the WebServer as a Service with PM2
-sudo npm install -g pm2
-cd /home/ubuntu/XYZUniversityTeam2
+# Install PM2 globally
+npm install -g pm2
 
-# Start application with PM2 (will automatically load .env file)
-pm2 start server.js --name xyzuniversity --env production
+# Start the Node app as ubuntu user
+sudo -u ubuntu pm2 start /home/ubuntu/XYZUniversityTeam2/server.js --name xyzuniversity
 
-# Setup PM2 to start on system boot
-pm2 startup systemd -u ubuntu --hp /home/ubuntu
-pm2 save
-
-# Display PM2 status
-pm2 status
-
-# Restart the app if you make changes
-pm2 restart xyzuniversity
+# Enable PM2 startup
+sudo -u ubuntu pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo -u ubuntu pm2 save
