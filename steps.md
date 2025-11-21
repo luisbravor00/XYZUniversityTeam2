@@ -1,11 +1,12 @@
 #!/bin/bash
+sudo su
 
 # Update system
 sudo apt update -y
 sudo apt upgrade -y
 
 # Install required packages
-sudo apt install -y git nginx build-essential nodejs
+sudo apt install -y git nginx build-essential nodejs npm mariadb-client-core
 
 # Switch to ubuntu user home
 cd /home/ubuntu
@@ -16,19 +17,20 @@ cd XYZUniversityTeam2
 
 # Install dependencies as ubuntu user
 sudo npm install
+sudo npm install mysql2
 
 # Write .env
 sudo tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
-RDS_HOSTNAME=your-rds-endpoint.rds.amazonaws.com
+RDS_HOSTNAME=
 RDS_PORT=3306
-RDS_USERNAME=
-RDS_PASSWORD=
+RDS_USERNAME=admin
+RDS_PASSWORD=Mypassw0rd123
 RDS_DB_NAME=students_db
 PORT=3000
 NODE_ENV=production
 EOF
 
-chmod 600 /home/ubuntu/XYZUniversityTeam2/.env
+sudo chmod 600 /home/ubuntu/XYZUniversityTeam2/.env
 
 # Configure Nginx reverse proxy
 sudo rm -f /etc/nginx/sites-enabled/default
@@ -54,14 +56,9 @@ EOF
 
 sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
 sudo nginx -t
-sudio systemctl restart nginx
+sudo systemctl restart nginx
 
-# Install PM2 globally
-npm install -g pm2
-
-# Start the Node app as ubuntu user
-sudo pm2 start /home/ubuntu/XYZUniversityTeam2/server.js --name xyzuniversity
-
-# Enable PM2 startup
-sudo pm2 startup systemd -u ubuntu --hp /home/ubuntu
-sudo pm2 save
+# Starting the service
+echo "Initializing the server in the background..."
+cd /home/ubuntu/XYZUniversityTeam2
+nohup node server.js > server_starting.log 2>&1 &
