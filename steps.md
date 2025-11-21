@@ -24,7 +24,7 @@ sudo tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
 RDS_HOSTNAME=
 RDS_PORT=3306
 RDS_USERNAME=admin
-RDS_PASSWORD=Mypassw0rd123
+RDS_PASSWORD=
 RDS_DB_NAME=students_db
 PORT=3000
 NODE_ENV=production
