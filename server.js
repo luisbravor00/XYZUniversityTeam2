@@ -9,6 +9,7 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,7 +24,7 @@ const dbConfig = {
   host: process.env.RDS_HOSTNAME || 'your-rds-endpoint.rds.amazonaws.com',
   port: process.env.RDS_PORT || 3306,
   user: process.env.RDS_USERNAME || 'admin',
-  password: process.env.RDS_PASSWORD || 'Mypassw0rd123',
+  password: process.env.RDS_PASSWORD || 'password',
   database: process.env.RDS_DB_NAME || 'students_db',
   waitForConnections: true,
   connectionLimit: 10,
@@ -31,6 +32,10 @@ const dbConfig = {
   enableKeepAlive: true,
   keepAliveInitialDelay: 0
 };
+
+console.log('RDS Host:', process.env.RDS_HOSTNAME);
+console.log('RDS Database:', process.env.RDS_DB_NAME);
+console.log('Server PORT:', process.env.PORT);
 
 // Create connection pool
 let pool;

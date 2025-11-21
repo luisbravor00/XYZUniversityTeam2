@@ -17,7 +17,7 @@ cd XYZUniversityTeam2
 
 # Install dependencies as ubuntu user
 sudo npm install
-sudo npm install mysql2
+sudo npm install mysql2 dotenv
 
 # Write .env
 sudo tee /home/ubuntu/XYZUniversityTeam2/.env > /dev/null << 'EOF'
